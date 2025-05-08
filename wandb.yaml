@@ -1,0 +1,51 @@
+program: model_testing_1.py
+method: random
+metric:
+  name: spearman_correlation_scaled # Or test_mape_unscaled, or other relevant metric
+  goal: minimize
+parameters:
+  LEARNING_RATE:
+    distribution: log_uniform_values
+    min: 1e-5
+    max: 1e-3
+  BATCH_SIZE:
+    values: [32, 64, 128]
+  NUM_EPOCHS:
+    values: [20, 30, 50]
+  BASE_WINDOW:
+    values: [5, 7, 10]
+  SCALING_FACTOR:
+    distribution: uniform
+    min: 2
+    max: 5
+  MAX_WINDOW:
+    values: [10, 15, 20]
+  LSTM_HIDDEN:
+    values: [64, 128, 256]
+  FC_HIDDEN:
+    values: [32, 64, 128]
+  DROPOUT_RATE:
+    distribution: uniform
+    min: 0.1
+    max: 0.5
+  TCN_DROPOUT:
+    distribution: uniform
+    min: 0.1
+    max: 0.3
+  # TCN_CHANNELS might be more complex to sweep directly if the number of layers changes.
+  # For simplicity, keeping it fixed or sweeping individual channel sizes if structure is fixed.
+  # Example for fixed structure, sweeping first channel size:
+  # TCN_CHANNELS_0:
+  #   values: [32, 64]
+  # TCN_CHANNELS_1:
+  #   values: [32, 64]
+  # You would need to modify your script to construct TCN_CHANNELS from these.
+  # For now, we assume TCN_CHANNELS is fixed as per the script or you'll adjust the script.
+
+# To run the sweep, you would typically use:
+# 1. wandb sweep wandb.yaml
+# 2. Copy the command output by `wandb sweep` (e.g., wandb agent <sweep_id>) and run it.
+# Ensure your script `model_testing_1.py` is set up to accept these hyperparameters
+# from `wandb.config` when a sweep is running.
+# The script already logs these parameters to wandb.config, so it should pick them up
+# if they are passed by the wandb agent.
